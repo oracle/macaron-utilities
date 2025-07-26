@@ -1,0 +1,73 @@
+# Copyright (c) 2025 - 2025, Oracle and/or its affiliates. All rights reserved.
+# Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl/.
+
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+default_install_hook_types: [pre-commit, commit-msg, pre-push]
+default_stages: [pre-commit]
+minimum_pre_commit_version: 4.0.0
+
+repos:
+
+# These meta hooks check the pre-commit configuration itself.
+- repo: meta
+  hooks:
+  - id: check-hooks-apply
+  - id: check-useless-excludes
+
+# Commitizen enforces semantic and conventional commit messages.
+- repo: https://github.com/commitizen-tools/commitizen
+  rev: v4.8.3
+  hooks:
+  - id: commitizen
+    name: Check conventional commit message
+    stages: [commit-msg]
+
+# Enable a whole bunch of useful helper hooks, too.
+# See https://pre-commit.com/hooks.html for more hooks.
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v5.0.0
+  hooks:
+  - id: check-case-conflict
+  - id: check-merge-conflict
+  - id: check-added-large-files
+    stages: [pre-commit]
+    args: [--maxkb=500]
+  - id: end-of-file-fixer
+    stages: [pre-commit]
+  - id: trailing-whitespace
+    args: [--markdown-linebreak-ext=md]
+    stages: [pre-commit]
+  - id: detect-private-key
+  - id: detect-aws-credentials
+    args: [--allow-missing-credentials]
+  - id: check-yaml
+
+# Check and prettify the configuration files.
+- repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
+  rev: v2.15.0
+  hooks:
+  - id: pretty-format-yaml
+    args: [--autofix]
+
+# Check GitHub Actions workflow files.
+- repo: https://github.com/Mateusz-Grzelinski/actionlint-py
+  rev: v1.7.7.23
+  hooks:
+  - id: actionlint
+
+# Check shell scripts with shellcheck.
+- repo: https://github.com/shellcheck-py/shellcheck-py
+  rev: v0.10.0.1
+  hooks:
+  - id: shellcheck
+
+# Checks the copyright header for .java, .js, .py, etc. files.
+- repo: local
+  hooks:
+  - id: copyright-checker
+    name: Copyright checker
+    entry: scripts/dev_scripts/copyright-checker.sh
+    language: system
+    always_run: true
+    pass_filenames: false

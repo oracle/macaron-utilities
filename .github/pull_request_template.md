@@ -1,38 +1,32 @@
-# Description
-
-Please include a summary of the change and which issue is fixed. Please also include relevant motivation and context. List any dependencies that are required for this change.
-
-Fixes # (issue)
+## Summary
+<!-- Briefly summarize the purpose and scope of this PR. -->
 
 ## Type of change
-
-Please delete options that are not relevant.
+<!-- Go over following points. check them with an `x` if they do apply. Please delete options that are not relevant. -->
 
 - [ ] Bug fix (non-breaking change which fixes an issue)
 - [ ] New feature (non-breaking change which adds functionality)
 - [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected)
 - [ ] This change requires a documentation update
 
-# How Has This Been Tested?
+## Description of changes
+<!-- Provide a detailed explanation of the changes made in this PR, why they were needed, and how they address the issue(s). -->
 
-Please describe the tests that you ran to verify your changes. Provide instructions so we can reproduce. Please also list any relevant details for your test configuration
+## Related issues
+<!-- List any related issue(s) this PR addresses, e.g., `Closes #123`, `Fixes #456`. -->
+
+# How Has This Been Tested?
+<!-- Please describe the tests that you ran to verify your changes. -->
 
 - [ ] Test A
 - [ ] Test B
 
-**Test Configuration**:
-* Firmware version:
-* Hardware:
-* Toolchain:
-* SDK:
+## Checklist
+<!-- Go over following points. check them with an `x` if they do apply, (they turn into clickable checkboxes once the PR is submitted, so no need to do everything at once) -->
 
-# Checklist:
-
-- [ ] My code follows the style guidelines of this project
-- [ ] I have performed a self-review of my own code
-- [ ] I have commented my code, particularly in hard-to-understand areas
-- [ ] I have made corresponding changes to the documentation
-- [ ] My changes generate no new warnings
-- [ ] I have added tests that prove my fix is effective or that my feature works
-- [ ] New and existing unit tests pass locally with my changes
-- [ ] Any dependent changes have been merged and published in downstream modules
+- [ ] I have reviewed the [contribution guide](../CONTRIBUTING.md).
+- [ ] My PR title and commits follow the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) convention.
+- [ ] My commits include the "Signed-off-by" line.
+- [ ] I have signed my commits following the instructions provided by [GitHub](https://docs.github.com/en/authentication/managing-commit-signature-verification/signing-commits). Note that we run [GitHub's commit verification](https://docs.github.com/en/authentication/managing-commit-signature-verification/about-commit-signature-verification) tool to check the commit signatures. A green `verified` label should appear next to **all** of your commits on GitHub.
+- [ ] I have updated the relevant documentation, if applicable.
+- [ ] I have tested my changes and verified they work as expected.

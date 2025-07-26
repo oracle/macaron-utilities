@@ -1,0 +1,58 @@
+# Copyright (c) 2025 - 2025, Oracle and/or its affiliates. All rights reserved.
+# Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl/.
+
+# This configuration file enables Dependabot version updates.
+# https://docs.github.com/en/code-security/supply-chain-security/keeping-your-dependencies-updated-automatically/about-dependabot-version-updates
+# https://github.com/dependabot/feedback/issues/551
+
+version: 2
+updates:
+- package-ecosystem: maven
+  directory: /    # Location of pom.xml
+  schedule:
+    interval: weekly
+  commit-message:
+    prefix: chore
+    prefix-development: chore
+    include: scope
+  open-pull-requests-limit: 13
+  target-branch: main
+
+- package-ecosystem: gradle
+  directory: /    # Location of build.gradle or build.gradle.kts
+  schedule:
+    interval: weekly
+  commit-message:
+    prefix: chore
+    prefix-development: chore
+    include: scope
+  open-pull-requests-limit: 13
+  target-branch: main
+
+- package-ecosystem: github-actions
+  directory: /
+  schedule:
+    interval: weekly
+  commit-message:
+    prefix: chore
+    prefix-development: chore
+    include: scope
+  open-pull-requests-limit: 13
+  target-branch: main
+
+# Naming for requirements.txt variants has to include requirements.txt at the end.
+# See https://stackoverflow.com/questions/75899186/how-to-configure-dependabot-to-check-multiple-files
+- package-ecosystem: pip
+  directory: /
+  schedule:
+    interval: weekly
+  commit-message:
+    prefix: chore
+    prefix-development: chore
+    include: scope
+  open-pull-requests-limit: 13
+  target-branch: main
+  ignore:
+  - dependency-name: '*'
+    update-types:
+    - version-update:semver-patch
