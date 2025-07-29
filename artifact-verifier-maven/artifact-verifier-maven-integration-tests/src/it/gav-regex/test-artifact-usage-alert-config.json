@@ -1,0 +1,6 @@
+{
+    "type": "report-gav-regex",
+    "gav-regex": {
+        "~version": ".*-oracle-[0-9]+"
+    }
+}

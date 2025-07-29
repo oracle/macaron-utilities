@@ -1,0 +1,18 @@
+<!-- Copyright (c) 2025, 2025, Oracle and/or its affiliates. -->
+<!-- Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl/. -->
+
+<FindBugsFilter>
+    <!-- Configuration by URL needs to use user-provided url -->
+    <Match>
+        <Class name="com.oracle.macaron.artifactverifier.ArtifactUsageReporterConfiguration"/>
+        <Method name="fromConfiguration"/>
+        <Bug pattern="URLCONNECTION_SSRF_FD"/>
+    </Match>
+
+    <!-- Provenance lookup needs to use user-provided base url for Maven repo -->
+    <Match>
+        <Class name="com.oracle.macaron.artifactverifier.ProvenanceLookup"/>
+        <Method name="lookupProvenance"/>
+        <Bug pattern="URLCONNECTION_SSRF_FD"/>
+    </Match>
+</FindBugsFilter>

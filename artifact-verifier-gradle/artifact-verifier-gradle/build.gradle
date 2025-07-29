@@ -1,0 +1,61 @@
+/* Copyright (c) 2025, 2025, Oracle and/or its affiliates. */
+/* Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl/. */
+
+plugins {
+    // Apply the Java Gradle plugin development plugin to add support for developing Gradle plugins
+    id 'java-gradle-plugin'
+    id 'maven-publish'
+    id("com.github.spotbugs") version "6.2.1"
+}
+group = 'com.oracle.macaron'
+version = '0.1-SNAPSHOT'
+
+repositories {
+    mavenLocal()
+    // Use Maven Central for resolving dependencies.
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'com.oracle.macaron:artifact-verifier:0.1-SNAPSHOT'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.19.0'
+
+    // Use JUnit Jupiter for testing.
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.7.2'
+}
+
+gradlePlugin {
+    // Define the plugin
+    plugins {
+        verifydependenciesplugin {
+            id = 'com.oracle.macaron.artifactverifier.gradle.verifydependencies'
+            implementationClass = 'com.oracle.macaron.artifactverifier.gradle.VerifyDependenciesPlugin'
+        }
+    }
+}
+
+// Add a source set for the functional test suite
+sourceSets {
+    functionalTest {
+    }
+}
+
+gradlePlugin.testSourceSets(sourceSets.functionalTest)
+configurations.functionalTestImplementation.extendsFrom(configurations.testImplementation)
+
+// Add a task to run the functional tests
+tasks.register('functionalTest', Test) {
+    testClassesDirs = sourceSets.functionalTest.output.classesDirs
+    classpath = sourceSets.functionalTest.runtimeClasspath
+    useJUnitPlatform()
+}
+
+tasks.named('check') {
+    // Run the functional tests as part of `check`
+    dependsOn(tasks.functionalTest)
+}
+
+tasks.named('test') {
+    // Use JUnit Platform for unit tests.
+    useJUnitPlatform()
+}
