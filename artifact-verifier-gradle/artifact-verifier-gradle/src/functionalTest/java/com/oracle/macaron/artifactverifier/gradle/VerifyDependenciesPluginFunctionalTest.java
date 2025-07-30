@@ -32,13 +32,6 @@ class VerifyDependenciesPluginFunctionalTest {
             }
             """);
         writeString(new File(projectDir, "settings.gradle"), "");
-        writeString(new File(projectDir, "gradle.properties"),
-            """
-            systemProp.http.proxyHost=au-proxy.au.oracle.com
-            systemProp.http.proxyPort=80
-            systemProp.https.proxyHost=au-proxy.au.oracle.com
-            systemProp.https.proxyPort=80
-            """);
 
         writeString(new File(projectDir, "test-artifact-usage-alert-config.json"),
             """
