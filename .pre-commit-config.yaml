@@ -61,6 +61,7 @@ repos:
   rev: v0.10.0.1
   hooks:
   - id: shellcheck
+    exclude: gradlew
 
 # Checks the copyright header for .java, .js, .py, etc. files.
 - repo: local

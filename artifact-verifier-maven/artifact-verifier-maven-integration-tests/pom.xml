@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Copyright (c) 2025, 2025, Oracle and/or its affiliates. -->
+<!-- Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl/. -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.oracle.macaron</groupId>
+    <artifactId>artifact-verifier-maven-parent</artifactId>
+    <version>0.1-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>artifact-verifier-maven-integration-tests</artifactId>
+  <packaging>jar</packaging>
+
+  <name>Artifact Verifier Maven Plugin - Integration Tests</name>
+  <description>Integration tests for Artifact Verifier Maven Plugin</description>
+
+  <properties>
+    <maven.deploy.skip>true</maven.deploy.skip>
+    <maven.javadoc.skip>true</maven.javadoc.skip>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.oracle.macaron</groupId>
+      <artifactId>artifact-verifier-maven-enforcer-rules</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-invoker-plugin</artifactId>
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.groovy</groupId>
+            <artifactId>groovy</artifactId>
+            <version>4.0.24</version>
+          </dependency>
+        </dependencies>
+        <configuration>
+          <streamLogsOnFailures>true</streamLogsOnFailures>
+          <failIfNoProjects>true</failIfNoProjects>
+          <cloneProjectsTo>../target/it</cloneProjectsTo>
+          <pomIncludes>
+            <pomInclude>hello-world/pom.xml</pomInclude>
+            <pomInclude>deps-without-vsa/pom.xml</pomInclude>
+            <pomInclude>without-relevant-artifacts/pom.xml</pomInclude>
+            <pomInclude>report-corresponding-warn-exact/pom.xml</pomInclude>
+            <pomInclude>report-corresponding-error-exact/pom.xml</pomInclude>
+            <pomInclude>report-corresponding-warn-any/pom.xml</pomInclude>
+            <pomInclude>report-corresponding-error-any/pom.xml</pomInclude>
+            <pomInclude>report-corresponding-warn-any-error-exact/pom.xml</pomInclude>
+            <pomInclude>gav-regex/pom.xml</pomInclude>
+          </pomIncludes>
+          <postBuildHookScript>verify</postBuildHookScript>
+          <selectorScript>selector</selectorScript>
+          <localRepositoryPath>../target/local-repo</localRepositoryPath>
+          <settingsFile>src/it/settings.xml</settingsFile>
+          <scriptVariables>
+            <nativeMavenPluginVersion>${native-maven-plugin.version}</nativeMavenPluginVersion>
+            <pluginVersion>${project.version}</pluginVersion>
+          </scriptVariables>
+          <goals>
+            <goal>clean</goal>
+            <goal>install</goal>
+          </goals>
+          <writeJunitReport>true</writeJunitReport>
+          <properties>
+            <jdk.version>${java.specification.version}</jdk.version>
+          </properties>
+        </configuration>
+        <executions>
+          <execution>
+            <id>integration-test</id>
+            <goals>
+              <goal>install</goal>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

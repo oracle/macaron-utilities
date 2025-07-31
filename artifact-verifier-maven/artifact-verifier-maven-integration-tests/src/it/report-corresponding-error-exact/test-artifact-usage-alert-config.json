@@ -1,0 +1,10 @@
+{
+    "type": "report-gav-alternatives-map",
+    "gav-alternatives": {
+        "io.micronaut:micronaut-inject:3.8.5": ["io.micronaut:micronaut-inject:3.8.5-oracle-00001"],
+        "io.micronaut:micronaut-core:3.8.5": ["io.micronaut:micronaut-core:3.8.5-oracle-00001"],
+        "io.micronaut:micronaut-inject:4.6.8": ["io.micronaut:micronaut-inject:4.6.8-oracle-00001"],
+        "io.micronaut:micronaut-core:4.6.8": ["io.micronaut:micronaut-core:4.6.8-oracle-00001"],
+        "io.micronaut.security:micronaut-security-annotations:4.6.10": ["io.micronaut.security:micronaut-security-annotation:4.6.10-oracle-00001"]
+    }
+}

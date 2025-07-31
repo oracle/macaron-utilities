@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Copyright (c) 2022 - 2024, Oracle and/or its affiliates. All rights reserved.
+# Copyright (c) 2022, 2025, Oracle and/or its affiliates.
 # Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl/.
 
 #
@@ -17,12 +17,12 @@
 #   STDOUT: The start year if it exists; empty string otherwise.
 get_existing_start_year() {
   file="$1"
-  copyright_line=$(grep -i -e "Copyright (c) [0-9]* - [0-9]*, Oracle and/or its affiliates. All rights reserved." "$file")
+  copyright_line=$(grep -i -E -e "Copyright \(c\) ([0-9]+)(( -)|,) ([0-9]+), Oracle and/or its affiliates\.( All rights reserved\.)?" "$file")
 
   # Use bash regex matching to get the start year with a capture group.
   # Grep is not used since it does not have support for capture groups.
   # Reference: https://stackoverflow.com/questions/1891797/capturing-groups-from-a-grep-regex
-  capture_pattern="Copyright \(c\) ([0-9]*) - [0-9]*, Oracle and/or its affiliates. All rights reserved."
+  capture_pattern="Copyright \(c\) ([0-9]+)(( -)|,) ([0-9]+), Oracle and/or its affiliates\.( All rights reserved\.)?"
 
   if [[ $copyright_line =~ $capture_pattern ]]
   then
@@ -44,7 +44,7 @@ for f in $files; do
     if [ ! -f "$f" ]; then
         continue
     fi
-    if ! grep -i -e "Copyright (c) [0-9]* - $currentyear, Oracle and/or its affiliates. All rights reserved." "$f" 1>/dev/null;then
+    if ! grep -i -E -e "Copyright \(c\) ([0-9]+)(( -)|,) $currentyear, Oracle and/or its affiliates\.( All rights reserved\.)?" "$f" 1>/dev/null;then
         if [[ $f =~ .*\.(js$|py$|java$|tf$|go$|sh$|dl$|yaml$|yml$|gradle$|kts$|ini$|toml$) ]] || [[ "${f##*/}" = "Dockerfile" ]] \
             || [[ "${f##*/}" = "Makefile" ]] || [[ "${f##*/}" = "Jenkinsfile" ]];then
           missing_copyright_files+=("$f")
@@ -72,19 +72,19 @@ if [ ${#missing_copyright_files[@]} -ne 0 ]; then
             startyear=$currentyear
         fi
         if [[ $f =~ .*\.(js$|java$|go$|dl$|gradle$|kts$) ]] || [[ "${f##*/}" = "Jenkinsfile" ]]; then
-            expected="\/\* Copyright \(c\) $startyear - $currentyear, Oracle and\/or its affiliates\. All rights reserved\. \*\/"
+            expected="\/\* Copyright \(c\) $startyear, $currentyear, Oracle and\/or its affiliates\. \*\/"
             if [ ${#missing_license_note} -eq 0 ]; then
                 expected="$expected\n\/\* $license_note \*\/"
             fi
         elif [[ $f =~ .*\.(py$|tf$|sh$|yaml$|yml$|ini$|toml$) ]] || [[ "${f##*/}" = "Dockerfile" ]] || [[ "${f##*/}" = "Makefile" ]]; then
-            expected="# Copyright \(c\) $startyear - $currentyear, Oracle and\/or its affiliates\. All rights reserved\."
+            expected="# Copyright \(c\) $startyear, $currentyear, Oracle and\/or its affiliates\."
             if [ ${#missing_license_note} -eq 0 ]; then
                 expected="$expected\n# $license_note"
             fi
         fi
 
         # Find the first matching copyright line.
-        line_number=$(grep -m 1 -n -i -e "Copyright (c) .* Oracle and/or its affiliates. All rights reserved" "$f" | cut -d : -f 1)
+        line_number=$(grep -m 1 -n -i -E -e "Copyright \(c\) .* Oracle and/or its affiliates\.( All rights reserved\.)?" "$f" | cut -d : -f 1)
         if [[ -z "$line_number" ]]; then
             echo "Copyright header missing for $f."
 

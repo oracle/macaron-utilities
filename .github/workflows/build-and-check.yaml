@@ -49,4 +49,10 @@ jobs:
     # Build and test the artifacts.
     - name: Build the artifacts
       # TODO: Complete the run step.
-      run: echo "TODO"
+      run: |
+        cd artifact-verifier
+        mvn install
+        cd ../artifact-verifier-maven
+        mvn verify
+        cd ../artifact-verifier-gradle
+        ./gradlew build
