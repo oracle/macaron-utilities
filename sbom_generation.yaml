@@ -1,4 +1,5 @@
-# Copyright (c) 2025, Oracle and/or its affiliates. All rights reserved.
+# Copyright (c) 2025, 2025, Oracle and/or its affiliates.
+# Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl/.
 version: 0.1
 component: build
 timeoutInSeconds: 1000
@@ -9,66 +10,66 @@ env:
     CDXGEN_DEBUG_MODE: debug
     JAVA_HOME: /usr/lib64/graalvm/graalvm21-ee-java17
 steps:
-  - type: Command
-    name: Setup JDK 17
-    command: |
-      yum -y install graalvm21-ee-17-jdk
-      export PATH=$JAVA_HOME/bin:$PATH
-  - type: Command
-    name: Generate SBOM and Install artifact-verifier
-    command: |
-      cd artifact-verifier/
-      mvn install
-  - type: Command
-    name: Generate SBOM for Gradle plugin
-    command: |
-      cd artifact-verifier-gradle 
-      cat <<EOF > init.gradle
-        initscript {
-          repositories { maven { url "https://plugins.gradle.org/m2/" } }
-          dependencies { classpath "org.cyclonedx:cyclonedx-gradle-plugin:2.3.1" }
+- type: Command
+  name: Setup JDK 17
+  command: |
+    yum -y install graalvm21-ee-17-jdk
+    export PATH=$JAVA_HOME/bin:$PATH
+- type: Command
+  name: Generate SBOM and Install artifact-verifier
+  command: |
+    cd artifact-verifier/
+    mvn install
+- type: Command
+  name: Generate SBOM for Gradle plugin
+  command: |
+    cd artifact-verifier-gradle
+    cat <<EOF > init.gradle
+      initscript {
+        repositories { maven { url "https://plugins.gradle.org/m2/" } }
+        dependencies { classpath "org.cyclonedx:cyclonedx-gradle-plugin:2.3.1" }
+      }
+      gradle.rootProject {
+        group = "com.oracle.macaron"
+      }
+      allprojects {
+        apply plugin: org.cyclonedx.gradle.CycloneDxPlugin
+        cyclonedxBom {
+          includeConfigs = ["runtimeClasspath", "compileClasspath"]
+          skipConfigs = ["testCompileClasspath"]
+          projectType = "application"
+          destination = file(".")
+          outputName = "sbom-gradle"
+          outputFormat = "json"
+          schemaVersion = "1.4"
         }
-        gradle.rootProject {
-          group = "com.oracle.macaron"
-        }
-        allprojects {
-          apply plugin: org.cyclonedx.gradle.CycloneDxPlugin
-          cyclonedxBom {
-            includeConfigs = ["runtimeClasspath", "compileClasspath"]
-            skipConfigs = ["testCompileClasspath"]
-            projectType = "application"
-            destination = file(".")
-            outputName = "sbom-gradle"
-            outputFormat = "json"
-            schemaVersion = "1.4"
-          }
-        }
-      EOF
-      ./gradlew --init-script init.gradle cyclonedxBom
-  - type: Command
-    name: Generate SBOM for Maven plugin
-    command: >
-      cd artifact-verifier-maven
+      }
+    EOF
+    ./gradlew --init-script init.gradle cyclonedxBom
+- type: Command
+  name: Generate SBOM for Maven plugin
+  command: >
+    cd artifact-verifier-maven
 
-      mvn org.cyclonedx:cyclonedx-maven-plugin:2.9.1:makeAggregateBom
-      -DincludeRuntimeScope=true \
-          -DincludeCompileScope=true -DincludeProvidedScope=false -DincludeSystemScope=false -DincludeTestScope=false \
-          -DoutputFormat=json -DoutputName=artifactSBOM -DschemaVersion=1.4
-  - type: Command
-    name: Merge all SBOMs
-    command: >
-      wget -q
-      https://github.com/CycloneDX/cyclonedx-cli/releases/download/v0.27.2/cyclonedx-linux-x64
+    mvn org.cyclonedx:cyclonedx-maven-plugin:2.9.1:makeAggregateBom
+    -DincludeRuntimeScope=true \
+        -DincludeCompileScope=true -DincludeProvidedScope=false -DincludeSystemScope=false -DincludeTestScope=false \
+        -DoutputFormat=json -DoutputName=artifactSBOM -DschemaVersion=1.4
+- type: Command
+  name: Merge all SBOMs
+  command: >
+    wget -q
+    https://github.com/CycloneDX/cyclonedx-cli/releases/download/v0.27.2/cyclonedx-linux-x64
 
-      yum install -y libicu
+    yum install -y libicu
 
-      chmod +x cyclonedx-linux-x64
+    chmod +x cyclonedx-linux-x64
 
-      ./cyclonedx-linux-x64 merge --input-files
-      artifact-verifier-maven/target/artifactSBOM.json
-      artifact-verifier-gradle/sbom-gradle.json --output-file
-      ${OCI_PRIMARY_SOURCE_DIR}/artifactSBOM.json
+    ./cyclonedx-linux-x64 merge --input-files
+    artifact-verifier-maven/target/artifactSBOM.json
+    artifact-verifier-gradle/sbom-gradle.json --output-file
+    ${OCI_PRIMARY_SOURCE_DIR}/artifactSBOM.json
 outputArtifacts:
-  - name: artifactSBOM
-    type: BINARY
-    location: '${OCI_PRIMARY_SOURCE_DIR}/artifactSBOM.json'
+- name: artifactSBOM
+  type: BINARY
+  location: ${OCI_PRIMARY_SOURCE_DIR}/artifactSBOM.json
