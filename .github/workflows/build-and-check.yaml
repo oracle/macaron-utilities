@@ -48,7 +48,6 @@ jobs:
 
     # Build and test the artifacts.
     - name: Build the artifacts
-      # TODO: Complete the run step.
       run: |
         cd artifact-verifier
         mvn install
